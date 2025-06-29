@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GreenBite - Veg Restaurant</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f9f9f9; color: #333; }
+    header {
+      background-color: #2e7d32; color: white;
+      padding: 20px 40px; position: fixed; top: 0; width: 100%; z-index: 999;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    header h1 { font-size: 28px; letter-spacing: 2px; }
+    nav a {
+      color: white; margin: 0 15px; text-decoration: none; font-weight: bold;
+      padding-bottom: 4px; transition: all 0.3s;
+    }
+    nav a:hover { border-bottom: 2px solid gold; color: gold; }
+    .container { padding: 120px 30px 30px; max-width: 1200px; margin: 0 auto; }
+    .section-title {
+      font-size: 26px; margin-bottom: 20px;
+      color: #2e7d32; border-left: 5px solid #4caf50; padding-left: 15px;
+    }
+    .products {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white; border-radius: 12px; padding: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06); transition: transform 0.3s;
+    }
+    .card:hover { transform: translateY(-3px); }
+    .card img {
+      width: 100%; height: 160px; object-fit: cover;
+      border-radius: 10px; margin-bottom: 10px;
+    }
+    .card h3 { font-size: 18px; margin-bottom: 5px; }
+    .card p { font-size: 15px; margin-bottom: 10px; }
+    .card-footer { text-align: center; }
+    .card-footer button {
+      background-color: #2e7d32; color: white;
+      border: none; padding: 8px 16px; cursor: pointer;
+      border-radius: 5px; font-size: 14px;
+      transition: background 0.3s;
+    }
+    .card-footer button:hover {
+      background-color: gold; color: black;
+    }
+    .cart, .checkout-form {
+      background: white; margin-top: 40px; padding: 20px;
+      border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .cart h2, .checkout-form h2 { margin-bottom: 15px; }
+    .cart-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #eee;
+    }
+    .cart-item:last-child { border: none; }
+    .cart-item span, .cart-item input { font-size: 14px; }
+    .cart-item input {
+      width: 50px; padding: 4px; margin: 0 10px;
+      border: 1px solid #ccc; border-radius: 4px;
+      text-align: center;
+    }
+    .remove-btn {
+      background: transparent; border: none; color: #c62828;
+      cursor: pointer; font-size: 16px;
+    }
+    .billing { font-size: 18px; font-weight: bold; text-align: right; margin-top: 10px; }
+    .checkout-form input, .checkout-form select {
+      width: 100%; padding: 10px; margin-bottom: 15px;
+      border: 1px solid #ccc; border-radius: 8px;
+    }
+    .checkout-form button {
+      background-color: darkgreen; color: white;
+      padding: 10px 20px; border: none; border-radius: 8px;
+      font-size: 16px; cursor: pointer;
+    }
+    .checkout-form button:hover { background-color: gold; color: black; }
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 40px; right: 40px;
+      background: #333; color: white;
+      padding: 12px 20px; border-radius: 25px;
+      opacity: 0; transition: opacity 0.4s;
+      pointer-events: none; font-size: 14px;
+    }
+    #toast.show { opacity: 1; }
+    @media(max-width: 768px) {
+      nav a { margin: 0 10px; font-size: 14px; }
+      .cart-item { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>GreenBite</h1>
+  <nav>
+    <a href="#starters">Starters</a>
+    <a href="#main">Main Course</a>
+    <a href="#desserts">Desserts</a>
+    <a href="#cart">Cart</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <!-- Starters -->
+  <section id="starters">
+    <h2 class="section-title">Starters</h2>
+    <div class="products">
+      <div class="card">
+        <img src="http://www.maatamanti.com/wp-content/uploads/2017/10/Veg-Manchurian2.jpg" alt="Veg Manchurian">
+        <h3>Veg Manchurian</h3><p>₹120</p>
+        <div class="card-footer">
+          <button onclick="addToCart('Veg Manchurian', 120)">Add to Cart</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://www.whiskaffair.com/wp-content/uploads/2019/11/Veg-Cutlet-1-3.jpg" alt="Veg Cutlet">
+        <h3>Veg Cutlet</h3><p>₹100</p>
+        <div class="card-footer">
+          <button onclick="addToCart('Veg Cutlet', 100)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Course -->
+  <section id="main">
+    <h2 class="section-title">Main Course</h2>
+    <div class="products">
+      <div class="card">
+        <img src="https://www.dwarakaorganic.com/wp-content/uploads/2012/06/Veg-Biryani-Recipe.jpg" alt="Veg Biryani">
+        <h3>Veg Biryani</h3><p>₹180</p>
+        <div class="card-footer">
+          <button onclick="addToCart('Veg Biryani', 180)">Add to Cart</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://www.ndtv.com/cooks/images/arabiata_med.jpg" alt="Veg Penne Pasta">
+        <h3>Veg Penne Pasta</h3><p>₹160</p>
+        <div class="card-footer">
+          <button onclick="addToCart('Veg Penne Pasta', 160)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Desserts -->
+  <section id="desserts">
+    <h2 class="section-title">Desserts</h2>
+    <div class="products">
+      <div class="card">
+        <img src="https://product-assets.faasos.io/production/product/image_1650354048746_Gulab_Jamun_2_Pcs_.jpg" alt="Gulab Jamun">
+        <h3>Gulab Jamun</h3><p>₹60</p>
+        <div class="card-footer">
+          <button onclick="addToCart('Gulab Jamun', 60)">Add to Cart</button>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjrIHVN4l3XyOcauSVkmYaKkXcDXCSRk4n8wSpy3SUhLBe3O5y_4gZH5RscPhFMIYp9bYKbMtPuLUgds7ffgzo84FZ2fXlSxelUbAER8WJqzBY8EVjT5qTAB0TL7I-qMcWSE3QqLLr_cNbkFNhOcMsBplb3f4_8EFdh0vepmdD4aBjaBfNOXl5v7SiRow/s16000/carrot-halwa.jpg" alt="Gajar Halwa">
+        <h3>Gajar Halwa</h3><p>₹70</p>
+        <div class="card-footer">
+          <button onclick="addToCart('Gajar Halwa', 70)">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cart -->
+  <section id="cart" class="checkout-form">
+    <h2>Your Cart</h2>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="billing">Total: ₹<span id="total">0</span></div>
+    <button onclick="checkout()">Proceed to Checkout</button>
+  </section>
+
+  <!-- Checkout Form -->
+  <section class="checkout-form">
+    <h2>Delivery Details</h2>
+    <input type="text" id="name" placeholder="Full Name" required />
+    <input type="text" id="address" placeholder="Delivery Address" required />
+    <input type="tel" id="phone" placeholder="Phone Number" required />
+    <select id="payment">
+      <option value="cod">Cash on Delivery</option>
+      <option value="card">Credit/Debit Card</option>
+      <option value="upi">UPI</option>
+    </select>
+    <button onclick="checkout()">Place Order</button>
+  </section>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  let cart = [];
+
+  function addToCart(item, price) {
+    const found = cart.find(c => c.item === item);
+    if (found) found.qty++;
+    else cart.push({ item, price, qty: 1 });
+    displayCart();
+    showToast(`${item} added to cart`);
+  }
+
+  function removeFromCart(item) {
+    cart = cart.filter(c => c.item !== item);
+    displayCart();
+  }
+
+  function updateQty(item, qty) {
+    if (qty < 1) return removeFromCart(item);
+    cart.find(c => c.item === item).qty = qty;
+    displayCart();
+  }
+
+  function displayCart() {
+    const container = document.getElementById('cart-items');
+    container.innerHTML = '';
+    let total = 0;
+    cart.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'cart-item';
+      row.innerHTML = `
+        <span>${c.item}</span>
+        <input type="number" min="1" value="${c.qty}" onchange="updateQty('${c.item}', this.value)">
+        <span>₹${c.price * c.qty}</span>
+        <button class="remove-btn" onclick="removeFromCart('${c.item}')">✖️</button>`;
+      container.appendChild(row);
+      total += c.price * c.qty;
+    });
+    document.getElementById('total').textContent = total;
+  }
+
+  function checkout() {
+    const name = document.getElementById('name').value.trim();
+    const addr = document.getElementById('address').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const payment = document.getElementById('payment').value.toUpperCase();
+    const total = document.getElementById('total').textContent;
+
+    if (!name || !addr || !phone || total <= 0) {
+      showToast("⚠ Please complete form and add items.");
+      return;
+    }
+    showToast(`✅ Thank you ${name}! Order of ₹${total} placed (${payment}).`);
+    cart = [];
+    displayCart();
+    document.querySelector('.checkout-form').reset();
+  }
+
+  function showToast(message) {
+    const t = document.getElementById('toast');
+    t.textContent = message;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
